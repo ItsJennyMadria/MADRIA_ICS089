@@ -19,3 +19,33 @@ if (isset($_POST['login'])) {
         $error = "Invalid email or password.";
     }
 }
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+    <h2>Login</h2>
+
+    <?php if (!empty($error)): ?>
+        <p style="color: red;"><?php echo $error; ?></p>
+    <?php endif; ?>
+
+    <form action="index.php" method="POST">
+        <div>
+            <label>Email:</label>
+            <input type="email" name="email" required>
+        </div>
+        <br>
+        <div>
+            <label>Password:</label>
+            <input type="password" name="password" required>
+        </div>
+        <br>
+        <button type="submit" name="login">Login</button>
+    </form>
+</body>
+</html>
