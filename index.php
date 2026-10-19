@@ -5,19 +5,27 @@ require_once 'db.php';
 $error = '';
 
 if (isset($_POST['login'])) {
-    $email = $_POST['email'];
+    $email = trim($_POST['email']);
     $password = $_POST['password'];
 
-    $query = "SELECT * FROM users WHERE email = '$email' AND password = '$password'";
-    $result = mysqli_query($conn, $query);
+    $stmt = $conn->prepare("SELECT id, password FROM users WHERE email = ?");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-    if (mysqli_num_rows($result) == 1) {
-        $_SESSION['email'] = $email;
-        header("Location: welcome.php");
-        exit();
+    if ($row = $result->fetch_assoc()) {
+        // Verify hashed password OR fallback to plain text for old test users
+        if (password_verify($password, $row['password']) || $password === $row['password']) {
+            $_SESSION['email'] = $email;
+            header("Location: welcome.php");
+            exit();
+        } else {
+            $error = "Invalid email or password.";
+        }
     } else {
         $error = "Invalid email or password.";
     }
+    $stmt->close();
 }
 ?>
 
@@ -36,16 +44,18 @@ if (isset($_POST['login'])) {
 
     <form action="index.php" method="POST">
         <div>
-            <label>Email:</label>
+            <label>Email:</label><br>
             <input type="email" name="email" required>
         </div>
         <br>
         <div>
-            <label>Password:</label>
+            <label>Password:</label><br>
             <input type="password" name="password" required>
         </div>
         <br>
         <button type="submit" name="login">Login</button>
     </form>
+
+    <p>Don't have an account? <a href="register.php">Register here</a></p>
 </body>
 </html>
