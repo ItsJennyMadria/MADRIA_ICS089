@@ -14,7 +14,6 @@ if (isset($_POST['login'])) {
     $result = $stmt->get_result();
 
     if ($row = $result->fetch_assoc()) {
-        // Verify hashed password OR fallback to plain text for old test users
         if (password_verify($password, $row['password']) || $password === $row['password']) {
             $_SESSION['email'] = $email;
             header("Location: welcome.php");
@@ -34,28 +33,29 @@ if (isset($_POST['login'])) {
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h2>Login</h2>
+    <div class="container">
+        <h2>Login</h2>
 
-    <?php if (!empty($error)): ?>
-        <p style="color: red;"><?php echo $error; ?></p>
-    <?php endif; ?>
+        <?php if (!empty($error)): ?>
+            <div class="alert alert-error"><?php echo $error; ?></div>
+        <?php endif; ?>
 
-    <form action="index.php" method="POST">
-        <div>
-            <label>Email:</label><br>
-            <input type="email" name="email" required>
-        </div>
-        <br>
-        <div>
-            <label>Password:</label><br>
-            <input type="password" name="password" required>
-        </div>
-        <br>
-        <button type="submit" name="login">Login</button>
-    </form>
+        <form action="index.php" method="POST">
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" name="password" required>
+            </div>
+            <button type="submit" name="login" class="btn">Login</button>
+        </form>
 
-    <p>Don't have an account? <a href="register.php">Register here</a></p>
+        <p class="auth-link">Don't have an account? <a href="register.php">Register here</a></p>
+    </div>
 </body>
 </html>

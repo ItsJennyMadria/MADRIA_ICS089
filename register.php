@@ -13,7 +13,6 @@ if (isset($_POST['register'])) {
     if ($password !== $confirm_password) {
         $error = "Passwords do not match.";
     } else {
-        // Check if email already exists
         $check_stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
         $check_stmt->bind_param("s", $email);
         $check_stmt->execute();
@@ -22,10 +21,8 @@ if (isset($_POST['register'])) {
         if ($check_result->num_rows > 0) {
             $error = "Email is already registered.";
         } else {
-            // Hash the password for security
             $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-            // Insert new user using prepared statements
             $insert_stmt = $conn->prepare("INSERT INTO users (email, password) VALUES (?, ?)");
             $insert_stmt->bind_param("ss", $email, $hashed_password);
 
@@ -46,37 +43,37 @@ if (isset($_POST['register'])) {
 <head>
     <meta charset="UTF-8">
     <title>Register</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h2>Register</h2>
+    <div class="container">
+        <h2>Register</h2>
 
-    <?php if (!empty($error)): ?>
-        <p style="color: red;"><?php echo $error; ?></p>
-    <?php endif; ?>
+        <?php if (!empty($error)): ?>
+            <div class="alert alert-error"><?php echo $error; ?></div>
+        <?php endif; ?>
 
-    <?php if (!empty($success)): ?>
-        <p style="color: green;"><?php echo $success; ?></p>
-    <?php endif; ?>
+        <?php if (!empty($success)): ?>
+            <div class="alert alert-success"><?php echo $success; ?></div>
+        <?php endif; ?>
 
-    <form action="register.php" method="POST">
-        <div>
-            <label>Email:</label><br>
-            <input type="email" name="email" required>
-        </div>
-        <br>
-        <div>
-            <label>Password:</label><br>
-            <input type="password" name="password" required>
-        </div>
-        <br>
-        <div>
-            <label>Confirm Password:</label><br>
-            <input type="password" name="confirm_password" required>
-        </div>
-        <br>
-        <button type="submit" name="register">Register</button>
-    </form>
+        <form action="register.php" method="POST">
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" name="password" required>
+            </div>
+            <div class="form-group">
+                <label>Confirm Password</label>
+                <input type="password" name="confirm_password" required>
+            </div>
+            <button type="submit" name="register" class="btn">Register</button>
+        </form>
 
-    <p>Already have an account? <a href="index.php">Login here</a></p>
+        <p class="auth-link">Already have an account? <a href="index.php">Login here</a></p>
+    </div>
 </body>
 </html>
