@@ -13,3 +13,7 @@ CREATE TABLE IF NOT EXISTS users (
 INSERT INTO users (email, password) 
 VALUES ('test@example.com', '123456')
 ON DUPLICATE KEY UPDATE email=email;
+
+-- Add role column with 'user' as default
+ALTER TABLE users 
+ADD COLUMN role VARCHAR(50) NOT NULL DEFAULT 'user' AFTER password;

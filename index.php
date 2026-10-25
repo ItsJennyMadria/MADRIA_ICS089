@@ -8,7 +8,8 @@ if (isset($_POST['login'])) {
     $email = trim($_POST['email']);
     $password = $_POST['password'];
 
-    $stmt = $conn->prepare("SELECT id, password FROM users WHERE email = ?");
+    // Fetch 'role' along with id and password
+    $stmt = $conn->prepare("SELECT id, password, role FROM users WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -16,7 +17,10 @@ if (isset($_POST['login'])) {
     if ($row = $result->fetch_assoc()) {
         if (password_verify($password, $row['password']) || $password === $row['password']) {
             $_SESSION['email'] = $email;
-            header("Location: welcome.php");
+            $_SESSION['role'] = $row['role'];
+
+            // Redirect to the unified dashboard
+            header("Location: dashboard.php");
             exit();
         } else {
             $error = "Invalid email or password.";
