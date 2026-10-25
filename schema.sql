@@ -17,3 +17,6 @@ ON DUPLICATE KEY UPDATE email=email;
 -- Add role column with 'user' as default
 ALTER TABLE users 
 ADD COLUMN role VARCHAR(50) NOT NULL DEFAULT 'user' AFTER password;
+
+-- Add test admin role user
+UPDATE users SET role='admin' WHERE email='jenny_madria22@yahoo.com';
